@@ -35,10 +35,47 @@ puppeth
 - Export genesis configuration (default)\
 - Exit
 
+> Do macOS tải brew về ko có tool puppeth nên sẽ tự tạo file blockpoa.json trong folder network với nội dung như sau:
+> ```json
+> {
+>   "config": {
+>       "chainId": 13579,
+>       "homesteadBlock": 0,
+>       "eip150Block": 0,
+>       "eip155Block": 0,
+>       "eip158Block": 0,
+>       "byzantiumBlock": 0,
+>       "constantinopleBlock": 0,
+>       "petersburgBlock": 0,
+>       "istanbulBlock": 0,
+>       "muirGlacierBlock": 0,
+>       "clique": {
+>           "period": 5,
+>           "epoch": 30000
+>       },
+>       "terminalTotalDifficulty": 0,
+>       "terminalTotalDifficultyPassed": true
+>   },
+>   "nonce": "0x0",
+>   "timestamp": "0x00",
+>   "extraData": "0x0000000000000000000000003CA44889C0e6626778c1580f8Bb7e40664929e7a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+>   "gasLimit": "0x47e7c4",
+>   "difficulty": "0x1",
+>   "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+>   "coinbase": "0x0000000000000000000000000000000000000000",
+>   "alloc": {
+>       "0x3CA44889C0e6626778c1580f8Bb7e40664929e7a": { "balance": "0x1" }
+>   },
+>   "number": "0x0",
+>   "gasUsed": "0x0",
+>   "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+>}
+>```
+
 ## Step 4: Config node
 
 ```bash
-cd node1
+cd node2
 geth --datadir ./data init ../blockpoa.json
 ```
 
@@ -66,11 +103,21 @@ cd bnode
 bootnode -nodekey "./boot.key" -verbosity 7 -addr "127.0.0.1:30301"
 ```
 
-### Start node1
+### Start node1 (thay thế bootnode vì mac ko chạy đc bootnode)
 
 ```bash
 cd node1
 geth --networkid 13579 --datadir "./data" --bootnodes enode://50a0b00bca50df4bc49e62e012993df3f388fb74df6749359466c81c14922e1d7b25eb67d3d8a624b651884d39e2dfb343f008a09f32613e76cb919c891a8000@127.0.0.1:0?discport=30301 --port 30303 --ipcdisable --syncmode full --http --allow-insecure-unlock --http.corsdomain "*" --http.port 8545 --unlock 0xD94E9BCDfa317a4cDBff53F28621Bd680c57B71f --password password.txt --mine --miner.etherbase=0xD94E9BCDfa317a4cDBff53F28621Bd680c57B71f console
+```
+```bash
+# for macos
+cd node1
+geth --networkid 13579 --datadir "./data"  --port 30303 --ipcdisable --syncmode full --http --http.addr 0.0.0.0 --allow-insecure-unlock --http.corsdomain "*" --http.port 8545 --unlock 0x3CA44889C0e6626778c1580f8Bb7e40664929e7a --password password.txt --mine --miner.etherbase=0x3CA44889C0e6626778c1580f8Bb7e40664929e7a console
+```
+- Sau khi chạy 1 lúc cần chạy để lấy enode trong node 1
+```bash
+# for macos
+admin.nodeInfo.enode
 ```
 
 ### Start node2
@@ -78,4 +125,9 @@ geth --networkid 13579 --datadir "./data" --bootnodes enode://50a0b00bca50df4bc4
 ```bash
 cd node2
 geth --networkid 13579 --datadir "./data" --bootnodes enode://50a0b00bca50df4bc49e62e012993df3f388fb74df6749359466c81c14922e1d7b25eb67d3d8a624b651884d39e2dfb343f008a09f32613e76cb919c891a8000@127.0.0.1:0?discport=30301 --port 30305 --ipcdisable --syncmode full --http --allow-insecure-unlock --http.corsdomain "*" --http.port 8546 --authrpc.port 8552 --unlock 0x184c6bbd7d103AD4737b08553f645e506D268d35 --password password.txt --mine --miner.etherbase=0x184c6bbd7d103AD4737b08553f645e506D268d35 console
+```
+```bash
+# for macos
+cd node2
+geth --networkid 13579 --datadir "./data"  --bootnodes enode://b6f6ddcd5c9dd3c3c75db028fe7d91aefb8a855294f2fadf0ebc1ccf4417738a23c4c3d4ae90440f447d5459780cc89b4ede997aef9af213f20b6f8591b28f28@192.168.1.160:30303 --port 30305 --ipcdisable --syncmode full --http --http.addr 0.0.0.0 --allow-insecure-unlock --http.corsdomain "*" --http.port 8546 --authrpc.port 8552 --unlock 0xE9F23736285b4ec57d34C3D0f28B8aFb50FF5Cc7 --password password.txt --mine --miner.etherbase=0xE9F23736285b4ec57d34C3D0f28B8aFb50FF5Cc7 console
 ```
